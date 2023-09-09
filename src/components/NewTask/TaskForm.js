@@ -11,7 +11,8 @@ const TaskForm = (props) => {
         const enteredValue = taskInputRef.current.value
 
         if (enteredValue.trim().length > 0) {
-            props.onEnterTask(enteredValue)
+            console.log('entered: ' + enteredValue)
+            props.onTaskSubmit(enteredValue)
         }
     }
 

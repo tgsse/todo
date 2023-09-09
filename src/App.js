@@ -4,22 +4,19 @@ import Tasks from './components/Tasks/Tasks'
 import NewTask from './components/NewTask/NewTask'
 import useHttp from './hooks/useHttp'
 
-const getRequestOptions = {
-    fetchTasks(body) {
-        return {
-            url: `${process.env.REACT_APP_BASE_URL}`,
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${process.env.REACT_APP_AUTH_TOKEN}`
-            },
-            body: JSON.stringify(body),
-        }
+const requestOptions = {
+    fetchTasks: {
+        url: `${process.env.REACT_APP_BASE_URL}/api/tasks`,
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${process.env.REACT_APP_AUTH_TOKEN}`
+        },
     },
 }
 
 function App() {
 
-    const {isLoading, error, sendRequest: fetchTasks} = useHttp(getRequestOptions.fetchTasks(), onTasksLoaded)
+    const {isLoading, error, sendRequest: fetchTasks} = useHttp(requestOptions.fetchTasks, onTasksLoaded)
     const [tasks, setTasks] = useState([])
 
     useEffect(() => {
@@ -27,18 +24,20 @@ function App() {
     }, [])
 
     function onTasksLoaded(data) {
+        console.log('onTasksLoaded')
         setTasks(data.tasks)
     }
 
-    const taskAddHandler = (task) => {
-        setTasks((prevTasks) => prevTasks.concat(task))
+    function onTaskCreated() {
+        // setTasks((prevTasks) => prevTasks.concat(task))
+        // fetchTasks()
     }
 
     return (
         <React.Fragment>
-            <NewTask onAddTask={taskAddHandler}/>
+            <NewTask onTaskCreated={onTaskCreated}/>
             <Tasks
-                items={tasks}
+                tasks={tasks}
                 loading={isLoading}
                 error={error}
                 onFetch={fetchTasks}
